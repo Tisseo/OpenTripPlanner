@@ -1,0 +1,27 @@
+package org.opentripplanner.ext.vehicleparking.tisseo;
+
+import static org.opentripplanner.updater.vehicle_parking.VehicleParkingUpdaterParameters.UpdateType.FULL;
+
+import java.time.Duration;
+import java.time.ZoneId;
+import java.util.List;
+import org.opentripplanner.updater.spi.HttpHeaders;
+import org.opentripplanner.updater.vehicle_parking.VehicleParkingSourceType;
+import org.opentripplanner.updater.vehicle_parking.VehicleParkingUpdaterParameters;
+
+public record TisseoUpdaterParameters(
+  String configRef,
+  String url,
+  String feedId,
+  Duration frequency,
+  HttpHeaders httpHeaders,
+  List<String> tags,
+  VehicleParkingSourceType sourceType,
+  ZoneId timeZone
+)
+  implements VehicleParkingUpdaterParameters {
+  @Override
+  public UpdateType updateType() {
+    return FULL;
+  }
+}
