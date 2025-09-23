@@ -13,6 +13,7 @@ import org.opentripplanner.ext.vehicleparking.bikely.BikelyUpdaterParameters;
 import org.opentripplanner.ext.vehicleparking.liipi.LiipiParkUpdaterParameters;
 import org.opentripplanner.ext.vehicleparking.parkapi.ParkAPIUpdaterParameters;
 import org.opentripplanner.ext.vehicleparking.sirifm.SiriFmUpdaterParameters;
+import org.opentripplanner.ext.vehicleparking.tisseo.TisseoUpdaterParameters;
 import org.opentripplanner.standalone.config.framework.json.NodeAdapter;
 import org.opentripplanner.updater.vehicle_parking.VehicleParkingSourceType;
 import org.opentripplanner.updater.vehicle_parking.VehicleParkingUpdaterParameters;
@@ -52,6 +53,22 @@ public class VehicleParkingUpdaterConfig {
         c.of("hubsUrl").since(V2_2).summary("Hubs URL").asString(null)
       );
       case PARK_API, BICYCLE_PARK_API -> new ParkAPIUpdaterParameters(
+        updaterRef,
+        c.of("url").since(V2_2).summary("URL of the resource.").asString(),
+        feedId,
+        c
+          .of("frequency")
+          .since(V2_2)
+          .summary("How often to update the source.")
+          .asDuration(Duration.ofMinutes(1)),
+        HttpHeadersConfig.headers(c, V2_2),
+        new ArrayList<>(
+          c.of("tags").since(V2_2).summary("Tags to add to the parking lots.").asStringSet(Set.of())
+        ),
+        sourceType,
+        getTimeZone(c)
+      );
+      case TISSEO -> new TisseoUpdaterParameters(
         updaterRef,
         c.of("url").since(V2_2).summary("URL of the resource.").asString(),
         feedId,
