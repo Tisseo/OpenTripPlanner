@@ -1,0 +1,238 @@
+{
+  "expirationDate": "2025-02-26 14:22",
+  "park_and_ride": [
+    {
+      "address": "Boulevard Henri Ziegler, Blagnac",
+      "city": "Beauzelle",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_2",
+      "name": "Aéroconstellation",
+      "services": [],
+      "total_prm_parking_spots": 8,
+      "total_standard_parking_spots": 160
+    },
+    {
+      "address": "Chemin du Verdon, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_4",
+      "name": "Argoulets",
+      "total_prm_parking_spots": 25,
+      "total_standard_parking_spots": 1012
+    },
+    {
+      "address": "Route d'Agde, Balma",
+      "city": "Balma",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_1",
+      "name": "Balma-Gramont",
+      "total_prm_parking_spots": 30,
+      "total_standard_parking_spots": 1492
+    },
+    {
+      "address": "Avenue Flora Tristan, Ramonville St-Agne",
+      "city": "Ramonville-Saint-Agne",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_18",
+      "name": "Ramonville 2",
+
+      "total_prm_parking_spots": 20,
+      "total_standard_parking_spots": 256
+    },
+    {
+      "address": "Rue Durand, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_17",
+      "name": "Borderouge 2",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 138
+    },
+    {
+      "address": "Rue Françoise d'Eaubonne, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_6",
+      "name": "Borderouge 1",
+      "total_prm_parking_spots": 29,
+      "total_standard_parking_spots": 1165
+    },
+    {
+      "address": "Avenue du Gers, Frouzins",
+      "city": "Frouzins",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_27",
+      "name": "Frouzins Complexe Sportif",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 50
+    },
+    {
+      "address": "Route de Lombez, Plaisance-du-Touch",
+      "city": "Plaisance-du-Touch",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_26",
+      "name": "Plaisance Monestié",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 50
+    },
+    {
+      "address": "Avenue du Lauragais, Castanet-Tolosan",
+      "city": "Castanet-Tolosan",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_7",
+      "name": "Castanet-Tolosan",
+      "total_prm_parking_spots": 2,
+      "total_standard_parking_spots": 100
+    },
+    {
+      "address": "D813, Auzeville-Tolosane",
+      "city": "Auzeville-Tolosane",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_28",
+      "name": "Moulin Armand",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 59
+    },
+    {
+      "address": "Place Emile Male, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_3",
+      "name": "Arènes 1",
+      "total_prm_parking_spots": 11,
+      "total_standard_parking_spots": 297
+    },
+    {
+      "address": "Rue du 11 Novembre, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_15",
+      "name": "Arènes 2",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 210
+    },
+    {
+      "address": "Avenue du 8 mai 1945, Saint-Alban",
+      "city": "Saint-Alban",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_21",
+      "name": "St-Alban Centre Commercial",
+      "total_prm_parking_spots": 1,
+      "total_standard_parking_spots": 47
+    },
+    {
+      "address": "Esplanade Jean Cassou, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_8",
+      "name": "Jolimont",
+
+      "total_prm_parking_spots": 6,
+      "total_standard_parking_spots": 279
+    },
+    {
+      "address": "Avenue du Mirail, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_24",
+      "name": "Basso Cambo 3",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 69
+    },
+    {
+      "address": "Rue du Somport, L'Union",
+      "city": "L'Union",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_25",
+      "name": "L'Union Grande Halle",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 130
+    },
+    {
+      "address": "Chemin de Tucaut, Cugnaux",
+      "city": "Cugnaux",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_14",
+      "name": "Tucaut",
+      "total_prm_parking_spots": 4,
+      "total_standard_parking_spots": 85
+    },
+    {
+      "address": "Avenue Louis Bazerque, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_5",
+      "name": "Basso Cambo 1",
+      "total_prm_parking_spots": 15,
+      "total_standard_parking_spots": 694
+    },
+    {
+      "address": "Avenue Flora Tristan, Ramonville St-Agne",
+      "city": "Ramonville-Saint-Agne",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_11",
+      "name": "Ramonville 1",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 360
+    },
+    {
+      "address": "Chemin de Ribaute, Balma",
+      "city": "Balma",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_12",
+      "name": "Ribaute",
+      "total_prm_parking_spots": 3,
+      "total_standard_parking_spots": 55
+    },
+    {
+      "address": "Avenue Salvador Dali, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": false,
+      "id": "poi:PR_13",
+      "name": "Sept Deniers - Salvador Dali",
+      "total_prm_parking_spots": 0,
+      "total_standard_parking_spots": 550
+    },
+    {
+      "address": "Allée Marc Saint-Saens, Toulouse",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_16",
+      "name": "Basso Cambo 2",
+      "total_prm_parking_spots": 5,
+      "total_standard_parking_spots": 229
+    },
+    {
+      "address": "Avenue Irène Joliot-Curie",
+      "city": "Toulouse",
+      "has_message": false,
+      "has_realtime": true,
+      "id": "poi:PR_19",
+      "name": "Oncopole - Lise Enjalbert",
+      "total_prm_parking_spots": 11,
+      "total_standard_parking_spots": 532
+    }
+  ]
+}

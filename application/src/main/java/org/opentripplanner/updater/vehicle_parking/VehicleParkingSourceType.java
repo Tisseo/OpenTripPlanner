@@ -7,4 +7,5 @@ public enum VehicleParkingSourceType {
   BIKELY,
   BIKEEP,
   SIRI_FM,
+  TISSEO,
 }
