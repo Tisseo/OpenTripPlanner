@@ -8,12 +8,16 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import org.opentripplanner.apis.gtfs.GraphQLGenericRequestFilterUtils;
 import org.opentripplanner.apis.gtfs.GraphQLRequestContext;
 import org.opentripplanner.apis.gtfs.GraphQLUtils;
 import org.opentripplanner.apis.gtfs.generated.GraphQLDataFetchers;
@@ -333,6 +337,8 @@ public class StopImpl implements GraphQLDataFetchers.GraphQLStop {
       TransitService transitService = getTransitService(environment);
       var args = new GraphQLTypes.GraphQLStopStoptimesForPatternsArgs(environment.getArguments());
 
+      List<Map<String, String>> stopTimesRequestFilter = args.getGraphQLFilters();
+
       Function<StopLocation, List<StopTimesInPattern>> stopTFunction = stop ->
         transitService.findStopTimesInPattern(
           stop,
@@ -343,7 +349,7 @@ public class StopImpl implements GraphQLDataFetchers.GraphQLStop {
           !args.getGraphQLOmitCanceled()
         );
 
-      return getValue(environment, stopTFunction, station ->
+      List<StopTimesInPattern> stopTimesInPatterns = getValue(environment, stopTFunction, station ->
         station
           .getChildStops()
           .stream()
@@ -351,6 +357,30 @@ public class StopImpl implements GraphQLDataFetchers.GraphQLStop {
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
       );
+
+      if (stopTimesRequestFilter == null || stopTimesRequestFilter.isEmpty()) {
+        return stopTimesInPatterns;
+      }
+
+      return stopTimesInPatterns
+        .stream()
+        .map(stip -> {
+          Stream<TripTimeOnDate> filteredTimes = GraphQLGenericRequestFilterUtils.applyFilters(
+            stip.times.stream(),
+            stopTimesRequestFilter,
+            Collections.emptyMap()
+          );
+
+          List<TripTimeOnDate> filteredList = filteredTimes.toList();
+
+          if (filteredList.isEmpty()) {
+            return null;
+          }
+          stip.times = filteredList;
+          return stip;
+        })
+        .filter(Objects::nonNull)
+        .toList();
     };
   }
 
@@ -393,6 +423,8 @@ public class StopImpl implements GraphQLDataFetchers.GraphQLStop {
       TransitService transitService = getTransitService(environment);
       var args = new GraphQLTypes.GraphQLStopStoptimesForPatternsArgs(environment.getArguments());
 
+      List<Map<String, String>> stopTimesRequestFilter = args.getGraphQLFilters();
+
       Function<StopLocation, Stream<StopTimesInPattern>> stopTFunction = stop ->
         transitService
           .findStopTimesInPattern(
@@ -409,8 +441,19 @@ public class StopImpl implements GraphQLDataFetchers.GraphQLStop {
         station.getChildStops().stream().flatMap(stopTFunction)
       );
 
-      return stream
-        .flatMap(stoptimesWithPattern -> stoptimesWithPattern.times.stream())
+      Stream<TripTimeOnDate> tripTimesStream = stream.flatMap(stoptimesWithPattern ->
+        stoptimesWithPattern.times.stream()
+      );
+      // Apply filters only if they are provided
+      if (stopTimesRequestFilter != null && !stopTimesRequestFilter.isEmpty()) {
+        tripTimesStream = GraphQLGenericRequestFilterUtils.applyFilters(
+          tripTimesStream,
+          stopTimesRequestFilter,
+          Collections.emptyMap()
+        );
+      }
+
+      return tripTimesStream
         .sorted(Comparator.comparing(t -> t.getServiceDayMidnight() + t.getRealtimeDeparture()))
         .limit(args.getGraphQLNumberOfDepartures())
         .collect(Collectors.toList());

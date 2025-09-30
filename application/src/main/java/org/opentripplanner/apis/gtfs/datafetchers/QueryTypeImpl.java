@@ -21,10 +21,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
+import org.opentripplanner.apis.gtfs.GraphQLGenericRequestFilterUtils;
 import org.opentripplanner.apis.gtfs.GraphQLRequestContext;
 import org.opentripplanner.apis.gtfs.GraphQLUtils;
 import org.opentripplanner.apis.gtfs.generated.GraphQLDataFetchers;
@@ -640,6 +643,15 @@ public class QueryTypeImpl implements GraphQLDataFetchers.GraphQLQueryType {
         );
         routeStream = filter.filterRoutes(routeStream.toList()).stream();
       }
+
+      if (args.getGraphQLFilters() != null) {
+        routeStream = GraphQLGenericRequestFilterUtils.applyFilters(
+          routeStream,
+          args.getGraphQLFilters(),
+          Collections.emptyMap()
+        );
+      }
+
       return routeStream.toList();
     };
   }
@@ -684,6 +696,24 @@ public class QueryTypeImpl implements GraphQLDataFetchers.GraphQLQueryType {
         );
       }
 
+      if (args.getGraphQLFilters() != null) {
+        Map<String, Function<Station, Set<Object>>> stationFieldExtractors = Map.ofEntries(
+          Map.entry("route.", Station -> {
+            return Station.getChildStops()
+              .stream()
+              .flatMap(stop -> transitService.findPatterns(stop).stream())
+              .map(pattern -> pattern.getRoute())
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
+          })
+        );
+        stationStream = GraphQLGenericRequestFilterUtils.applyFilters(
+          stationStream,
+          args.getGraphQLFilters(),
+          stationFieldExtractors
+        );
+      }
+
       return stationStream.collect(Collectors.toList());
     };
   }
@@ -725,6 +755,23 @@ public class QueryTypeImpl implements GraphQLDataFetchers.GraphQLQueryType {
           GraphQLUtils.startsWith(stop.getName(), name, environment.getLocale())
         );
       }
+      if (args.getGraphQLFilters() != null) {
+        Map<String, Function<StopLocation, Set<Object>>> stopFieldExtractors = Map.ofEntries(
+          Map.entry("route.", stop -> {
+            return transitService
+              .findPatterns(stop)
+              .stream()
+              .map(pattern -> pattern.getRoute())
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
+          })
+        );
+        stopStream = GraphQLGenericRequestFilterUtils.applyFilters(
+          stopStream,
+          args.getGraphQLFilters(),
+          stopFieldExtractors
+        );
+      }
 
       return stopStream.collect(Collectors.toList());
     };
@@ -747,6 +794,27 @@ public class QueryTypeImpl implements GraphQLDataFetchers.GraphQLQueryType {
       if (args.getGraphQLFeeds() != null) {
         List<String> feedIds = args.getGraphQLFeeds();
         stopStream = stopStream.filter(stop -> feedIds.contains(stop.getId().getFeedId()));
+      }
+
+      if (args.getGraphQLFilters() != null) {
+
+        TransitService transitService = getTransitService(environment);
+        Map<String, Function<RegularStop, Set<Object>>> stopFieldExtractors = Map.ofEntries(
+          Map.entry("route.", stop -> {
+            return transitService
+              .findPatterns(stop)
+              .stream()
+              .map(pattern -> pattern.getRoute())
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
+          })
+        );
+
+        stopStream = GraphQLGenericRequestFilterUtils.applyFilters(
+          stopStream,
+          args.getGraphQLFilters(),
+          stopFieldExtractors
+        );
       }
 
       return stopStream.collect(Collectors.toList());
