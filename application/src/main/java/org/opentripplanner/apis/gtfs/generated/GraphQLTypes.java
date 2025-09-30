@@ -4098,6 +4098,7 @@ public class GraphQLTypes {
     private String name;
     private GraphQLLocalDateRangeInput serviceDates;
     private List<GraphQLMode> transportModes;
+    private List<Map<String, String>> filters;
 
     public GraphQLQueryTypeRoutesArgs(Map<String, Object> args) {
       if (args != null) {
@@ -4112,6 +4113,9 @@ public class GraphQLTypes {
             .map(item -> item instanceof GraphQLMode ? item : GraphQLMode.valueOf((String) item))
             .map(GraphQLMode.class::cast)
             .collect(Collectors.toList());
+        }
+        if (args.get("filters") != null && args.get("filters") instanceof List) {
+          this.filters = (List<Map<String, String>>) args.get("filters");
         }
       }
     }
@@ -4136,6 +4140,10 @@ public class GraphQLTypes {
       return this.transportModes;
     }
 
+    public List<Map<String, String>> getGraphQLFilters() {
+      return this.filters;
+    }
+
     public void setGraphQLFeeds(List<String> feeds) {
       this.feeds = feeds;
     }
@@ -4154,6 +4162,10 @@ public class GraphQLTypes {
 
     public void setGraphQLTransportModes(List<GraphQLMode> transportModes) {
       this.transportModes = transportModes;
+    }
+
+    public void setGraphQLFilters(List<Map<String, String>> filters) {
+      this.filters = filters;
     }
   }
 
@@ -4180,11 +4192,15 @@ public class GraphQLTypes {
 
     private List<String> ids;
     private String name;
+    private List<Map<String, String>> filters;
 
     public GraphQLQueryTypeStationsArgs(Map<String, Object> args) {
       if (args != null) {
         this.ids = (List<String>) args.get("ids");
         this.name = (String) args.get("name");
+        if (args.get("filters") != null && args.get("filters") instanceof List) {
+          this.filters = (List<Map<String, String>>) args.get("filters");
+        }
       }
     }
 
@@ -4196,12 +4212,20 @@ public class GraphQLTypes {
       return this.name;
     }
 
+    public List<Map<String, String>> getGraphQLFilters() {
+      return this.filters;
+    }
+
     public void setGraphQLIds(List<String> ids) {
       this.ids = ids;
     }
 
     public void setGraphQLName(String name) {
       this.name = name;
+    }
+
+    public void setGraphQLFilters(List<Map<String, String>> filters) {
+      this.filters = filters;
     }
   }
 
@@ -4228,11 +4252,15 @@ public class GraphQLTypes {
 
     private List<String> ids;
     private String name;
+    private List<Map<String, String>> filters;
 
     public GraphQLQueryTypeStopsArgs(Map<String, Object> args) {
       if (args != null) {
         this.ids = (List<String>) args.get("ids");
         this.name = (String) args.get("name");
+      }
+      if (args.get("filters") != null && args.get("filters") instanceof List) {
+        this.filters = (List<Map<String, String>>) args.get("filters");
       }
     }
 
@@ -4244,12 +4272,20 @@ public class GraphQLTypes {
       return this.name;
     }
 
+    public List<Map<String, String>> getGraphQLFilters() {
+      return this.filters;
+    }
+
     public void setGraphQLIds(List<String> ids) {
       this.ids = ids;
     }
 
     public void setGraphQLName(String name) {
       this.name = name;
+    }
+
+    public void setGraphQLFilters(List<Map<String, String>> filters) {
+      this.filters = filters;
     }
   }
 
@@ -4260,6 +4296,7 @@ public class GraphQLTypes {
     private Double maxLon;
     private Double minLat;
     private Double minLon;
+    private List<Map<String, String>> filters;
 
     public GraphQLQueryTypeStopsByBboxArgs(Map<String, Object> args) {
       if (args != null) {
@@ -4268,6 +4305,9 @@ public class GraphQLTypes {
         this.maxLon = (Double) args.get("maxLon");
         this.minLat = (Double) args.get("minLat");
         this.minLon = (Double) args.get("minLon");
+        if (args.get("filters") != null && args.get("filters") instanceof List) {
+          this.filters = (List<Map<String, String>>) args.get("filters");
+        }
       }
     }
 
@@ -4291,6 +4331,10 @@ public class GraphQLTypes {
       return this.minLon;
     }
 
+    public List<Map<String, String>> getGraphQLFilters() {
+      return this.filters;
+    }
+
     public void setGraphQLFeeds(List<String> feeds) {
       this.feeds = feeds;
     }
@@ -4309,6 +4353,10 @@ public class GraphQLTypes {
 
     public void setGraphQLMinLon(Double minLon) {
       this.minLon = minLon;
+    }
+
+    public void setGraphQLFilters(List<Map<String, String>> filters) {
+      this.filters = filters;
     }
   }
 
@@ -4990,6 +5038,7 @@ public class GraphQLTypes {
     private Boolean omitNonPickups;
     private Long startTime;
     private Integer timeRange;
+    private List<Map<String, String>> filters;
 
     public GraphQLStopStoptimesForPatternsArgs(Map<String, Object> args) {
       if (args != null) {
@@ -4998,6 +5047,9 @@ public class GraphQLTypes {
         this.omitNonPickups = (Boolean) args.get("omitNonPickups");
         this.startTime = (Long) args.get("startTime");
         this.timeRange = (Integer) args.get("timeRange");
+        if (args.get("filters") != null && args.get("filters") instanceof List) {
+          this.filters = (List<Map<String, String>>) args.get("filters");
+        }
       }
     }
 
@@ -5021,6 +5073,10 @@ public class GraphQLTypes {
       return this.timeRange;
     }
 
+    public List<Map<String, String>> getGraphQLFilters() {
+      return this.filters;
+    }
+
     public void setGraphQLNumberOfDepartures(Integer numberOfDepartures) {
       this.numberOfDepartures = numberOfDepartures;
     }
@@ -5039,6 +5095,10 @@ public class GraphQLTypes {
 
     public void setGraphQLTimeRange(Integer timeRange) {
       this.timeRange = timeRange;
+    }
+
+    public void setGraphQLFilters(List<Map<String, String>> filters) {
+      this.filters = filters;
     }
   }
 

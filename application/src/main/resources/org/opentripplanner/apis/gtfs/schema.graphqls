@@ -1878,7 +1878,9 @@ type QueryType {
     """
     serviceDates: LocalDateRangeInput,
     "Only include routes, which use one of these modes"
-    transportModes: [Mode]
+    transportModes: [Mode],
+    "Only return routes according to filter field"
+    filters: [GenericRequestFilter]
   ): [Route] @timingData
   "Get the time range for which the API has data available"
   serviceTimeRange: serviceTimeRange @timingData
@@ -1889,7 +1891,9 @@ type QueryType {
     "Only return stations that match one of the ids in this list"
     ids: [String],
     "Query stations by name"
-    name: String
+    name: String,
+    "Only return stations according to filter field"
+    filters: [GenericRequestFilter]
   ): [Stop] @timingData
   "Get a single stop based on its ID, i.e. value of field `gtfsId` (ID format is `FeedId:StopId`)"
   stop(id: String!): Stop @timingData
@@ -1898,7 +1902,9 @@ type QueryType {
     "Return stops with these ids"
     ids: [String],
     "Query stops by this name"
-    name: String
+    name: String,
+    "Only return stops according to filter field"
+    filters: [GenericRequestFilter]
   ): [Stop] @timingData
   "Get all stops within the specified bounding box"
   stopsByBbox(
@@ -1911,7 +1917,9 @@ type QueryType {
     "Southern bound of the bounding box"
     minLat: Float!,
     "Western bound of the bounding box"
-    minLon: Float!
+    minLon: Float!,
+    "Return stops according to filter field"
+    filters: [GenericRequestFilter]
   ): [Stop] @timingData
   """
   Get all stops within the specified radius from a location. The returned type
@@ -2354,7 +2362,9 @@ type Stop implements Node & PlaceInterface {
     "Return departures after this time. Format: Unix timestamp in seconds. Default value: current time"
     startTime: Long = 0,
     "Return stoptimes within this time range, starting from `startTime`. Unit: Seconds"
-    timeRange: Int = 86400
+    timeRange: Int = 86400,
+    "Return departures according to filter field"
+    filters: [GenericRequestFilter]
   ): [StoptimesInPattern]
   "Returns list of stoptimes for the specified date"
   stoptimesForServiceDate(
@@ -2375,7 +2385,9 @@ type Stop implements Node & PlaceInterface {
     "Return departures after this time. Format: Unix timestamp in seconds. Default value: current time"
     startTime: Long = 0,
     "Return stoptimes within this time range, starting from `startTime`. Unit: Seconds"
-    timeRange: Int = 86400
+    timeRange: Int = 86400,
+    "Return departures according to filter field"
+    filters: [GenericRequestFilter]
   ): [Stoptime]
   timezone: String
   "List of nearby stops which can be used for transfers"
@@ -4380,6 +4392,87 @@ input FlexRequest {
   restrictions are applied - all journeys are listed.
   """
   bookingTime: OffsetDateTime
+}
+
+"""
+GenericRequestFilter:
+
+The GenericRequestFilter provides a flexible and reusable request filtering system that can be applied consistently across multiple GraphQL resolvers.
+
+The filter:
+  - Supports both simple fields (e.g., name, code) and nested object fields (e.g., route.shortName, parentStation.code).
+  - Accepts comma-separated values to allow multiple matches.
+  - Performs type conversion where possible, comparing values as strings.
+
+Filter Structure:
+
+filters: [
+  { key: "field.path", value: "expectedValue" }
+]
+
+Supported Resolvers:
+
+  1- Stops: can filter by stop fields (name, code, ... any other field available in the stop model), nested fields route.id, route.shortName, parentStation.id, parentStation.id,...(any other field available in the Route/Station model).
+
+    Example:
+    {
+      stops(
+        filters: [
+          { key: "route.shortName", value: "A,B" }
+          { key: "parentStation.id", value: "parentStation:SA:999" }
+        ]
+      ) {
+          id
+          name
+          code
+          routes {
+            id
+            shortName
+          }
+        }
+      }
+    Returns all stops that:
+      - Belong to routes whose shortName is "A" or "B", AND 
+      - Have a parent station with the ID "parentStation:SA:999".
+
+  2- StopsByBbox: You can filter using:
+
+    - Stop fields (name, code, ... any other field available in the stop model).
+    - Nested fields route.id, route.shortName, parentStation.id, parentStation.id,...(any other field available in the Route/Station model).
+
+  3- Stations: You can filter stations using:
+
+    - Station attributes: id, name, code, ... (any other field available in the Station model).
+    - Routes attached to the station through child stops: route.id, route.shortName, route.gtfsType, ... (any other field available in the Route model).
+
+  4- Routes: support filtering by any property in the Route model: id, shortName, longName, gtfsType, mode, agency.id.
+
+    Example:
+      {
+        routes(filters: [{ key: "gtfsType", value: "6" }]) {
+          id
+          shortName
+          longName
+          type
+          stops{
+            id
+            name
+          }
+        }
+      }
+    Returns only suspended cable routes (GTFS type == "6").
+  5- Stoptimes Without Patterns: filters can be applied on the Trip and Route objects attached to a stop time. 
+
+      Example: trip.route.id, trip.route.shortName, trip.route.agency.id
+
+      ...and any other field available in the Trip or Route models.
+
+  6- Stoptimes For Patterns: Similar to stoptimesWithoutPatterns, filters apply on Trip and Route fields.
+
+"""
+input GenericRequestFilter {
+  key: String!
+  value: String!
 }
 
 input InputBanned {
