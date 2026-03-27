@@ -29,11 +29,15 @@ public class GraphQLGenericRequestFilterUtils {
     Map<String, Function<T, Set<Object>>> extractors
   ) {
     // If there are no filters, return the original stream
-    if (filters == null || filters.isEmpty()) return items;
+    if (filters == null || filters.isEmpty()) {
+      return items;
+    }
 
     for (Map<String, String> filter : filters) {
       String key = filter.get("key");
-      if (key == null || key.isBlank()) continue;
+      if (key == null || key.isBlank()) {
+        continue;
+      }
 
       // Read the filter value (comma-separated) and convert to a Set<String> of accepted values.
       Set<String> acceptedValues = Arrays.stream(filter.get("value").split(","))
@@ -41,7 +45,9 @@ public class GraphQLGenericRequestFilterUtils {
         .filter(s -> !s.isEmpty())
         .collect(Collectors.toSet());
 
-      if (acceptedValues.isEmpty()) continue;
+      if (acceptedValues.isEmpty()) {
+        continue;
+      }
 
       // Find extractor that matches the key prefix
       Function<T, Set<Object>> extractor = null;
@@ -53,7 +59,9 @@ public class GraphQLGenericRequestFilterUtils {
           // Example: key="route.shortName", exKey="route" -> subKey=".shortName"
           subKey = key.length() > exKey.length() ? key.substring(exKey.length()) : null;
 
-          if (subKey != null && subKey.startsWith(".")) subKey = subKey.substring(1);
+          if (subKey != null && subKey.startsWith(".")) {
+            subKey = subKey.substring(1);
+          }
           // Stop searching once we found a matching extractor.
           break;
         }
@@ -76,7 +84,9 @@ public class GraphQLGenericRequestFilterUtils {
         //   - Could be the item itself (if no extractor matched, like "shortName, type").
         //   - Could be related objects (if an extractor was used, like "route").
         Set<Object> baseObjects = finalExtractor.apply(item);
-        if (baseObjects == null || baseObjects.isEmpty()) return false;
+        if (baseObjects == null || baseObjects.isEmpty()) {
+          return false;
+        }
 
         // For each base object, get the string values at the given path (via extractValues)
         // Then check if ANY of those values are in acceptedValues.
@@ -104,15 +114,21 @@ public class GraphQLGenericRequestFilterUtils {
    * @return set of string values extracted from the given path of the object.
    */
   private static Set<String> extractValues(Object obj, String path) {
-    if (obj == null) return Collections.emptySet();
-    if (path == null || path.isEmpty()) return Set.of(obj.toString());
+    if (obj == null) {
+      return Collections.emptySet();
+    }
+    if (path == null || path.isEmpty()) {
+      return Set.of(obj.toString());
+    }
 
     Object current = obj;
     try {
       // Split the path by '.' to navigate nested fields
       for (String part : path.split("\\.")) {
         // nothing can be extracted
-        if (current == null) return Collections.emptySet();
+        if (current == null) {
+          return Collections.emptySet();
+        }
         // Build the getter method name. "id" -> "getId", "shortName" -> "getShortName"
         String methodName = "get" + Character.toUpperCase(part.charAt(0)) + part.substring(1);
         // find the getter method on the current class
@@ -125,7 +141,9 @@ public class GraphQLGenericRequestFilterUtils {
       return Collections.emptySet();
     }
 
-    if (current == null) return Collections.emptySet();
+    if (current == null) {
+      return Collections.emptySet();
+    }
 
     // Convert all elements to strings
     if (current instanceof Collection<?>) {

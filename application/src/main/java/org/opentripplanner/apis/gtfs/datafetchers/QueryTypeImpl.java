@@ -797,7 +797,6 @@ public class QueryTypeImpl implements GraphQLDataFetchers.GraphQLQueryType {
       }
 
       if (args.getGraphQLFilters() != null) {
-
         TransitService transitService = getTransitService(environment);
         Map<String, Function<RegularStop, Set<Object>>> stopFieldExtractors = Map.ofEntries(
           Map.entry("route.", stop -> {

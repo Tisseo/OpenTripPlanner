@@ -9,10 +9,10 @@ import java.time.Month;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.opentripplanner._support.time.ZoneIds;
-import org.opentripplanner.model.calendar.openinghours.OpeningHoursCalendarService;
+import org.opentripplanner.framework.io.HttpHeaders;
+import org.opentripplanner.street.model.openinghours.OpeningHoursCalendarService;
 import org.opentripplanner.test.support.ResourceLoader;
 import org.opentripplanner.transit.model.framework.Deduplicator;
-import org.opentripplanner.updater.spi.HttpHeaders;
 
 public class TisseoUpdaterTest {
 

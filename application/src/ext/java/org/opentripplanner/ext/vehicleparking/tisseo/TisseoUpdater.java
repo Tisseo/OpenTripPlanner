@@ -4,14 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.opentripplanner.framework.geometry.WgsCoordinate;
-import org.opentripplanner.framework.i18n.NonLocalizedString;
-import org.opentripplanner.model.calendar.openinghours.OpeningHoursCalendarService;
+import org.opentripplanner.core.model.i18n.NonLocalizedString;
+import org.opentripplanner.core.model.id.FeedScopedId;
 import org.opentripplanner.osm.OsmOpeningHoursParser;
 import org.opentripplanner.service.vehicleparking.model.VehicleParking;
 import org.opentripplanner.service.vehicleparking.model.VehicleParkingSpaces;
 import org.opentripplanner.service.vehicleparking.model.VehicleParkingState;
-import org.opentripplanner.transit.model.framework.FeedScopedId;
+import org.opentripplanner.street.geometry.WgsCoordinate;
+import org.opentripplanner.street.model.openinghours.OpeningHoursCalendarService;
 import org.opentripplanner.updater.spi.GenericJsonDataSource;
 import org.opentripplanner.utils.tostring.ToStringBuilder;
 
@@ -35,8 +35,10 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     super(parameters.url(), JSON_PARSE_PATH, parameters.httpHeaders());
     this.feedId = parameters.feedId();
     this.staticTags = parameters.tags();
-    this.osmOpeningHoursParser =
-      new OsmOpeningHoursParser(openingHoursCalendarService, parameters.timeZone());
+    this.osmOpeningHoursParser = new OsmOpeningHoursParser(
+      openingHoursCalendarService,
+      parameters.timeZone()
+    );
     this.url = parameters.url();
   }
 
@@ -69,8 +71,10 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     int freeWheelchairAccesiblesCarPlaces = 0;
     if (jsonNode.has(JSON_PATH_REALTIME) && !jsonNode.get(JSON_PATH_REALTIME).isEmpty()) {
       freeCarPlaces = jsonNode.path(JSON_PATH_REALTIME).path("free_standard_parking_spots").asInt();
-      freeWheelchairAccesiblesCarPlaces =
-        jsonNode.path(JSON_PATH_REALTIME).path("free_prm_parking_spots").asInt();
+      freeWheelchairAccesiblesCarPlaces = jsonNode
+        .path(JSON_PATH_REALTIME)
+        .path("free_prm_parking_spots")
+        .asInt();
     }
 
     var wheelChairAccessiblePlaces = freeWheelchairAccesiblesCarPlaces > 0;
@@ -78,8 +82,7 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     var tags = parseTags(jsonNode, "lot_type", "forecast", "state");
     tags.addAll(staticTags);
 
-    return VehicleParking
-      .builder()
+    return VehicleParking.builder()
       .id(vehicleParkId)
       .name(vehicleParkName)
       .state(state)
@@ -120,8 +123,7 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     Integer wheelchairAccessibleCarSpaces,
     Integer bicycleSpaces
   ) {
-    return VehicleParkingSpaces
-      .builder()
+    return VehicleParkingSpaces.builder()
       .bicycleSpaces(bicycleSpaces)
       .carSpaces(carSpaces)
       .wheelchairAccessibleCarSpaces(wheelchairAccessibleCarSpaces)
@@ -141,7 +143,8 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     for (String field : fields) {
       currentNode = currentNode.get(field);
       if (currentNode == null || currentNode.isMissingNode()) {
-        return null; //Field does not exist
+        //Field does not exist
+        return null;
       }
     }
     // Return the value as Int
@@ -165,13 +168,12 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     if (jsonNode.has("id")) {
       id = jsonNode.path("id").asText();
     } else {
-      id =
-        String.format(
-          "%s/%f/%f",
-          jsonNode.get("name"),
-          jsonNode.path("coords").path("lng").asDouble(),
-          jsonNode.path("coords").path("lat").asDouble()
-        );
+      id = String.format(
+        "%s/%f/%f",
+        jsonNode.get("name"),
+        jsonNode.path("coords").path("lng").asDouble(),
+        jsonNode.path("coords").path("lat").asDouble()
+      );
     }
     return new FeedScopedId(newFeedId, id);
   }

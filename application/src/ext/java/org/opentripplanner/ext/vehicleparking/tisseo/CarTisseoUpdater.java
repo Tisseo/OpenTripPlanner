@@ -1,8 +1,8 @@
 package org.opentripplanner.ext.vehicleparking.tisseo;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.opentripplanner.model.calendar.openinghours.OpeningHoursCalendarService;
 import org.opentripplanner.service.vehicleparking.model.VehicleParkingSpaces;
+import org.opentripplanner.street.model.openinghours.OpeningHoursCalendarService;
 
 public class CarTisseoUpdater extends TisseoUpdater {
 

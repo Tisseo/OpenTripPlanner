@@ -12,7 +12,8 @@ public class AvailabilityDataSourceFactory {
   public static DataSource<AvailabiltyUpdate> create(VehicleParkingUpdaterParameters parameters) {
     return switch (parameters.sourceType()) {
       case SIRI_FM -> new SiriFmDataSource((SiriFmUpdaterParameters) parameters);
-      case PARK_API,
+      case
+        PARK_API,
         BICYCLE_PARK_API,
         LIIPI,
         BIKEEP,
