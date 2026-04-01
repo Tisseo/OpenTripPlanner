@@ -145,6 +145,11 @@ class ElevatorProcessor {
         continue;
       }
 
+      // Skip elevator edge creation for nodes with access=no
+      if ("no".equals(node.getTag("access"))) {
+        continue;
+      }
+
       List<OsmElevatorKey> osmElevatorKeys = new ArrayList<>(vertices.keySet());
       if (
         osmElevatorKeys
@@ -202,6 +207,11 @@ class ElevatorProcessor {
    */
   private void buildElevatorEdgesFromElevatorWays() {
     for (OsmWay way : osmdb.getWays()) {
+      // Skip elevator edge creation for ways with access=no
+      if ("no".equals(way.getTag("access"))) {
+        continue;
+      }
+
       if (!isElevatorWay(way)) {
         continue;
       }

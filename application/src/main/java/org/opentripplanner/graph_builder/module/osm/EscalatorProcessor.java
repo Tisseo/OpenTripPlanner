@@ -30,6 +30,11 @@ class EscalatorProcessor {
     IntersectionVertex fromVertex,
     IntersectionVertex toVertex
   ) {
+    // Skip escalator edge creation for ways with access=no
+    if ("no".equals(escalatorWay.getTag("access"))) {
+      return new EscalatorEdgePair(null, null);
+    }
+
     Optional<Duration> duration = escalatorWay.getDuration(v ->
       issueStore.add(
         Issue.issue(
