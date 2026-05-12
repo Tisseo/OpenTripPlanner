@@ -56,6 +56,11 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
     double y = jsonNode.path("y").asDouble();
 
     var state = parseState(jsonNode);
+    var tags = parseTags(jsonNode, "lot_type", "forecast", "state");
+    tags.addAll(staticTags);
+
+    boolean carPlaces;
+    boolean wheelChairAccessiblePlaces;
 
     // Create entrance
     VehicleParking.VehicleParkingEntranceCreator entrance = builder ->
@@ -67,20 +72,26 @@ abstract class TisseoUpdater extends GenericJsonDataSource<VehicleParking> {
         .carAccessible(true);
 
     // Retrieving information regarding the total number of carPlaces, freeCarPlaces, freeWheelchairPlaces,state
-    int freeCarPlaces = 0;
-    int freeWheelchairAccesiblesCarPlaces = 0;
     if (jsonNode.has(JSON_PATH_REALTIME) && !jsonNode.get(JSON_PATH_REALTIME).isEmpty()) {
-      freeCarPlaces = jsonNode.path(JSON_PATH_REALTIME).path("free_standard_parking_spots").asInt();
-      freeWheelchairAccesiblesCarPlaces = jsonNode
+      int freeCarPlaces = jsonNode.path(JSON_PATH_REALTIME).path("free_standard_parking_spots").asInt();
+      int freeWheelchairAccesiblesCarPlaces = jsonNode
         .path(JSON_PATH_REALTIME)
         .path("free_prm_parking_spots")
         .asInt();
-    }
+        carPlaces = freeCarPlaces > 0;
+        wheelChairAccessiblePlaces = freeWheelchairAccesiblesCarPlaces > 0;
+        
+        tags.add(carPlaces || wheelChairAccessiblePlaces ? "AVAILABLE" : "FULL");
+    }else{
+      carPlaces = capacity != null
+        && capacity.getCarSpaces() != null
+        && capacity.getCarSpaces() > 0;
+      wheelChairAccessiblePlaces = capacity != null
+        && capacity.getWheelchairAccessibleCarSpaces() != null
+        && capacity.getWheelchairAccessibleCarSpaces() > 0;
 
-    var wheelChairAccessiblePlaces = freeWheelchairAccesiblesCarPlaces > 0;
-    var carPlaces = freeCarPlaces > 0;
-    var tags = parseTags(jsonNode, "lot_type", "forecast", "state");
-    tags.addAll(staticTags);
+      tags.add("AVAILABLE");
+    }
 
     return VehicleParking.builder()
       .id(vehicleParkId)
